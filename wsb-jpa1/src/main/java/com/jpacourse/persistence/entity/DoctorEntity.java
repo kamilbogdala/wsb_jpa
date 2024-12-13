@@ -1,15 +1,13 @@
 package com.jpacourse.persistence.entity;
 
-import com.jpacourse.persistence.enums.Specialization;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.jpacourse.persistence.enums.Specialization;
 
 @Entity
 @Table(name = "DOCTOR")
@@ -19,24 +17,36 @@ public class DoctorEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@NotBlank(message = "First name cannot be blank")
+	@Size(max = 50, message = "First name cannot exceed 50 characters")
 	private String firstName;
 
-	@Column(nullable = false)
+	@NotBlank(message = "Last name cannot be blank")
+	@Size(max = 50, message = "Last name cannot exceed 50 characters")
 	private String lastName;
 
-	@Column(nullable = false)
+	@NotBlank(message = "Telephone number cannot be blank")
+	@Pattern(regexp = "\\+?[0-9]{7,15}", message = "Telephone number must be a valid number (7-15 digits)")
 	private String telephoneNumber;
 
+	@Email(message = "Email must be valid")
+	@Size(max = 100, message = "Email cannot exceed 100 characters")
 	private String email;
 
-	@Column(nullable = false)
+	@NotBlank(message = "Doctor number cannot be blank")
+	@Size(max = 5, message = "Doctor number cannot exceed 5 characters")
 	private String doctorNumber;
 
-	@Column(nullable = false)
+	@NotNull(message = "Specialization cannot be null")
 	@Enumerated(EnumType.STRING)
 	private Specialization specialization;
 
+	// One-to-one relationship with AddressEntity (two-way relation)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "address_id")
+	private AddressEntity address;
+
+	// Getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -93,4 +103,11 @@ public class DoctorEntity {
 		this.specialization = specialization;
 	}
 
+	public AddressEntity getAddress() {
+		return this.address;
+	}
+
+	public void setAddress(AddressEntity address) {
+		this.address = address;
+	}
 }

@@ -1,10 +1,9 @@
 package com.jpacourse.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "ADDRESS")
@@ -14,14 +13,30 @@ public class AddressEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank(message = "City cannot be blank")
+	@Size(max = 50, message = "City cannot exceed 50 characters")
 	private String city;
 
+	@NotBlank(message = "Address Line 1 cannot be blank")
+	@Size(max = 80, message = "Address Line 1 cannot exceed 80 characters")
 	private String addressLine1;
 
+	@Size(max = 80, message = "Address Line 2 cannot exceed 80 characters")
 	private String addressLine2;
 
+	@NotBlank(message = "Postal code cannot be blank")
+	@Size(max = 6, message = "Postal code cannot exceed 6 characters")
 	private String postalCode;
 
+	// One-to-one relationship with DoctorEntity (two-way relation)
+	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private DoctorEntity doctor;
+
+	// One-to-one relationship with PatientEntity (two-way relation)
+	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private PatientEntity patient;
+
+	// Getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -61,5 +76,4 @@ public class AddressEntity {
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
-
 }

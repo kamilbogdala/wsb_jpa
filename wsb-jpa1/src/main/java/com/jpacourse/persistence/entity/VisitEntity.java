@@ -1,13 +1,11 @@
 package com.jpacourse.persistence.entity;
 
 import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "VISIT")
@@ -17,11 +15,25 @@ public class VisitEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Size(max = 255, message = "Description cannot exceed 255 characters")
 	private String description;
 
+	@NotNull(message = "Time of visit cannot be null")
+	@FutureOrPresent(message = "Time of visit must be in the future or present")
 	@Column(nullable = false)
 	private LocalDateTime time;
 
+	// Many-to-one relationship with DoctorEntity (one-way relation from children)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "doctor_id")
+	private DoctorEntity doctor;
+
+	// Many-to-one relationship with PatientEntity (one-way relation from children)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "patient_id")
+	private PatientEntity patient;
+
+	// Getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -46,4 +58,19 @@ public class VisitEntity {
 		this.time = time;
 	}
 
+	public DoctorEntity getDoctor() {
+		return this.doctor;
+	}
+
+	public void setDoctor(DoctorEntity doctor) {
+		this.doctor = doctor;
+	}
+
+	public PatientEntity getPatient() {
+		return this.patient;
+	}
+
+	public void setPatient(PatientEntity patient) {
+		this.patient = patient;
+	}
 }
