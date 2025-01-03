@@ -69,7 +69,18 @@
 			<version>8.0.23</version>
 		</dependency>
 
-	</dependencies>
+		<!-- JUnit 4 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>

@@ -1,6 +1,7 @@
 package com.jpacourse.persistence.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -50,6 +51,13 @@ public class PatientEntity {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "address_id")
 	private AddressEntity address;
+
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<VisitEntity> visits;
+
+	// New non-String type variable
+	@NotNull(message = "Weight cannot be null")
+	private Double weight;
 
 	// Getters and setters
 	public Long getId() {
@@ -114,5 +122,20 @@ public class PatientEntity {
 
 	public void setAddress(AddressEntity address) {
 		this.address = address;
+	}
+
+	public List<VisitEntity> getVisits() {
+		return visits;
+	}
+	public void setVisits(List<VisitEntity> visits) {
+		this.visits = visits;
+	}
+
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
 	}
 }

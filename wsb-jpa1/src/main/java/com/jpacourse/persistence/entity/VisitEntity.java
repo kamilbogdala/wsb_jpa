@@ -1,6 +1,7 @@
 package com.jpacourse.persistence.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
@@ -32,6 +33,9 @@ public class VisitEntity {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "patient_id")
 	private PatientEntity patient;
+
+	@OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<MedicalTreatmentEntity> medicalTreatments;
 
 	// Getters and setters
 	public Long getId() {
@@ -72,5 +76,13 @@ public class VisitEntity {
 
 	public void setPatient(PatientEntity patient) {
 		this.patient = patient;
+	}
+
+	public List<MedicalTreatmentEntity> getMedicalTreatments() {
+		return medicalTreatments;
+	}
+
+	public void setMedicalTreatments(List<MedicalTreatmentEntity> medicalTreatments) {
+		this.medicalTreatments = medicalTreatments;
 	}
 }
