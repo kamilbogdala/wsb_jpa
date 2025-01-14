@@ -128,7 +128,7 @@ public class PatientServiceTest {
         patientTO.setEmail("dkubacki@gmail.com");
         patientTO.setPatientNumber("P0004");
         patientTO.setDateOfBirth(LocalDate.of(1990, 3, 15));
-        patientTO.setAge(34);
+        patientTO.Weight(77);
         patientTO.setAddress(addressTO);
         return patientService.savePatient(patientTO);
     }

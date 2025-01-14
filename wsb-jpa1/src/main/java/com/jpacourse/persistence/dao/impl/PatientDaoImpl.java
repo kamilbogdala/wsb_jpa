@@ -1,22 +1,24 @@
 package com.jpacourse.persistence.dao.impl;
 
+import com.jpacourse.persistence.dao.DoctorDao;
 import com.jpacourse.persistence.dao.PatientDao;
 import com.jpacourse.persistence.entity.DoctorEntity;
 import com.jpacourse.persistence.entity.PatientEntity;
 import com.jpacourse.persistence.entity.VisitEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements PatientDao {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private DoctorDao doctorDao;
 
-    public void addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitDate, String description) {
+    public VisitEntity addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitDate, String description) {
         // Find patient and doctor
         PatientEntity patient = entityManager.find(PatientEntity.class, patientId);
         DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
@@ -40,5 +42,37 @@ public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements 
 
         // Merge updated patient with cascading save for visit
         entityManager.merge(patient);
+
+        return visit;
+    }
+
+    @Override
+    public List<PatientEntity> findByLastName(String lastName) {
+        return entityManager.createQuery(
+                        "SELECT patie FROM PatientEntity patie WHERE patie.lastName = :lastName",
+                        PatientEntity.class
+                ).setParameter("lastName", lastName)
+                .getResultList();
+    }
+
+    @Override
+    public List<PatientEntity> findByAmountOfX(Long visitCount) {
+        return entityManager.createQuery(
+                        "SELECT patie FROM PatientEntity patie " +
+                                " JOIN patie.visits vis " +
+                                "GROUP BY patie " +
+                                "HAVING count(vis) >= :visitCount",
+                        PatientEntity.class
+                ).setParameter("visitCount", visitCount)
+                .getResultList();
+    }
+
+    @Override
+    public List<PatientEntity> finByWeight(Double weight) {
+        return entityManager.createQuery(
+                        "SELECT patie FROM PatientEntity patie WHERE patie.weight > :weight",
+                        PatientEntity.class
+                ).setParameter("weight", weight)
+                .getResultList();
     }
 }
