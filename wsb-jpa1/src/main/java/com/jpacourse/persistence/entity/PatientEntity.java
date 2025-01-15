@@ -48,11 +48,11 @@ public class PatientEntity {
 	private LocalDate dateOfBirth;
 
 	// One-to-one relationship with AddressEntity (two-way relation)
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "address_id")
 	private AddressEntity address;
 
-	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<VisitEntity> visits;
 
 	// New non-String type variable

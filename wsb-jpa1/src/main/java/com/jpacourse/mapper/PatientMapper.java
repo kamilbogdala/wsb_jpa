@@ -28,10 +28,12 @@ public final class PatientMapper {
         patientTO.setWeight(patientEntity.getWeight());
 
         // Mapping visits to VisitTO
-        List<VisitTO> visits = patientEntity.getVisits().stream()
-                .map(PatientMapper::mapVisitToTO)
-                .collect(Collectors.toList());
-        patientTO.setVisits(visits);
+        if (patientEntity.getVisits() != null) {
+            List<VisitTO> visits = patientEntity.getVisits().stream()
+                    .map(PatientMapper::mapVisitToTO)
+                    .collect(Collectors.toList());
+            patientTO.setVisits(visits);
+        }
 
         return patientTO;
     }

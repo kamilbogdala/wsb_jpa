@@ -5,10 +5,9 @@ import com.jpacourse.persistence.dao.PatientDao;
 import com.jpacourse.persistence.entity.DoctorEntity;
 import com.jpacourse.persistence.entity.PatientEntity;
 import com.jpacourse.persistence.entity.VisitEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,10 +17,10 @@ public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements 
     @Autowired
     private DoctorDao doctorDao;
 
-    public VisitEntity addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitDate, String description) {
+    public void addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitDate, String description) {
         // Find patient and doctor
-        PatientEntity patient = entityManager.find(PatientEntity.class, patientId);
-        DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
+        PatientEntity patient = findOne(patientId);
+        DoctorEntity doctor = doctorDao.findOne(doctorId);
 
         if (patient == null) {
             throw new IllegalArgumentException("Patient not found with ID: " + patientId);
@@ -42,8 +41,6 @@ public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements 
 
         // Merge updated patient with cascading save for visit
         entityManager.merge(patient);
-
-        return visit;
     }
 
     @Override
@@ -64,6 +61,16 @@ public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements 
                                 "HAVING count(vis) >= :visitCount",
                         PatientEntity.class
                 ).setParameter("visitCount", visitCount)
+                .getResultList();
+    }
+
+    @Override
+    public List<PatientEntity> findAllWeightLowerThan(Double weight) {
+        return entityManager.createQuery(
+                        "SELECT patie FROM PatientEntity patie " +
+                                "WHERE patie.weight <= :weight",
+                        PatientEntity.class
+                ).setParameter("weight", weight)
                 .getResultList();
     }
 

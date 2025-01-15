@@ -42,7 +42,7 @@ public class DoctorEntity {
 	private Specialization specialization;
 
 	// One-to-one relationship with AddressEntity (two-way relation)
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "address_id")
 	private AddressEntity address;
 

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -25,12 +24,12 @@ public class VisitEntity {
 	private LocalDateTime time;
 
 	// Many-to-one relationship with DoctorEntity (one-way relation from children)
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "doctor_id")
 	private DoctorEntity doctor;
 
 	// Many-to-one relationship with PatientEntity (one-way relation from children)
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "patient_id")
 	private PatientEntity patient;
 
