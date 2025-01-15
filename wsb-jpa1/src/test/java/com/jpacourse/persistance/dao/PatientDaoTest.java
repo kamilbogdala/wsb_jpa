@@ -1,28 +1,14 @@
 package com.jpacourse.persistance.dao;
 
-import com.jpacourse.dto.AddressTO;
-import com.jpacourse.dto.PatientTO;
-import com.jpacourse.mapper.AddressMapper;
-import com.jpacourse.mapper.PatientMapper;
-import com.jpacourse.persistence.dao.AddressDao;
-import com.jpacourse.persistence.dao.DoctorDao;
 import com.jpacourse.persistence.dao.PatientDao;
-import com.jpacourse.persistence.dao.VisitDao;
-import com.jpacourse.persistence.entity.AddressEntity;
-import com.jpacourse.persistence.entity.DoctorEntity;
 import com.jpacourse.persistence.entity.PatientEntity;
 import com.jpacourse.persistence.entity.VisitEntity;
-import com.jpacourse.persistence.enums.Specialization;
-import com.jpacourse.service.PatientService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,32 +21,24 @@ class PatientDaoTest {
     @Autowired
     private PatientDao patientDao;
 
-    @Autowired
-    private DoctorDao doctorDao;
+    @Test
+    void findByAmountOfX_Should_FindPatientWithAmountOfVisitsHigherThanX() {
+        // when
+        List<PatientEntity> patientList = patientDao.findByAmountOfX(3L);
 
-    @Autowired
-    private VisitDao visitDao;
+        // then;
+        assertThat(patientList).isNotNull();
+        assertThat(patientList.get(0).getVisits()).hasSize(3);
 
-    @Autowired
-    private AddressDao addressDao;
-
-    @Autowired
-    private PatientService patientService;
-
-    private AddressEntity savedAddress;
-    private DoctorEntity savedDoctor;
-    private PatientTO savedPatient;
-
-    @BeforeEach
-    void setUp() {
-        savedAddress = createAndSaveAddress();
-        savedDoctor = createAndSaveDoctor(savedAddress);
-        savedPatient = createAndSavePatient(savedAddress);
-    }
-
-    @AfterEach
-    void clearOut() {
-        patientService.deleteById(savedPatient.getId());
+        VisitEntity visit1 = patientList.get(0).getVisits().get(0);
+        VisitEntity visit2 = patientList.get(0).getVisits().get(1);
+        VisitEntity visit3 = patientList.get(0).getVisits().get(2);
+        assertThat(visit1.getDescription()).isEqualTo("Badanie wzroku");
+        assertThat(visit1.getDoctor().getId()).isEqualTo(3L);
+        assertThat(visit2.getDescription()).isEqualTo("Badanie krwi");
+        assertThat(visit2.getDoctor().getId()).isEqualTo(2L);
+        assertThat(visit3.getDescription()).isEqualTo("Badanie EKG");
+        assertThat(visit3.getDoctor().getId()).isEqualTo(5L);
     }
 
     @Test
@@ -70,92 +48,26 @@ class PatientDaoTest {
         String description = "Routine check-up";
 
         // when
-        patientDao.addVisitToPatient(savedPatient.getId(), savedDoctor.getId(), visitDate, description);
+        patientDao.addVisitToPatient(1L, 1L, visitDate, description);
 
         // then
-        PatientEntity patient = patientDao.findOne(savedPatient.getId());
+        PatientEntity patient = patientDao.findOne(1L);
         assertThat(patient).isNotNull();
-        assertThat(patient.getVisits()).hasSize(1);
+        assertThat(patient.getVisits()).hasSize(2);
 
-        VisitEntity visit = patient.getVisits().get(0);
+        VisitEntity visit = patient.getVisits().get(1);
         assertThat(visit.getDescription()).isEqualTo(description);
         assertThat(visit.getTime()).isEqualTo(visitDate);
-        assertThat(visit.getDoctor().getId()).isEqualTo(savedDoctor.getId());
-    }
-
-    @Test
-    void findByAmountOfX_Should_FindPatientWithAmountOfVisitsHigherThanX() {
-        // given
-        createAndSaveVisits(savedDoctor, savedPatient);
-
-        // when
-        List<PatientEntity> patientList = patientDao.findByAmountOfX(2L);
-
-        // then;
-        assertThat(patientList).isNotNull();
-        assertThat(patientList.get(0).getVisits()).hasSize(2);
-
-        VisitEntity visit = patientList.get(0).getVisits().get(0);
-        assertThat(visit.getDescription()).isEqualTo("Badanie krwi");
-        assertThat(visit.getDoctor().getId()).isEqualTo(savedDoctor.getId());
+        assertThat(visit.getDoctor().getId()).isEqualTo(1L);
     }
 
     @Test
     void findAllWeightLowerThan_Should_FindPatientsWithWeightLowerThan() {
         // when
-        List<PatientEntity> patientList = patientDao.findAllWeightLowerThan(8.0);
+        List<PatientEntity> patientList = patientDao.findAllWeightLowerThan(67.0);
 
         // then;
-        assertThat(patientList.size()).isGreaterThan(0);
-    }
-
-    private AddressEntity createAndSaveAddress() {
-        AddressTO addressTO = new AddressTO();
-        addressTO.setCity("Wielun");
-        addressTO.setAddressLine1("ul. Wodna 1");
-        addressTO.setPostalCode("98-300");
-        AddressEntity addressEntity = AddressMapper.mapToEntity(addressTO);
-        return addressDao.save(addressEntity);
-    }
-
-    private DoctorEntity createAndSaveDoctor(AddressEntity address) {
-        DoctorEntity doctor = new DoctorEntity();
-        doctor.setFirstName("Marek");
-        doctor.setLastName("Kowalczyk");
-        doctor.setTelephoneNumber("888555444");
-        doctor.setEmail("marek.kowalczyk@gmail.com");
-        doctor.setDoctorNumber("D0040");
-        doctor.setSpecialization(Specialization.DERMATOLOGIST);
-        doctor.setAddress(address);
-        return doctorDao.save(doctor);
-    }
-
-    private PatientTO createAndSavePatient(AddressEntity address) {
-        PatientEntity patientEntity = new PatientEntity();
-        patientEntity.setFirstName("Dawid");
-        patientEntity.setLastName("Kubacki");
-        patientEntity.setTelephoneNumber("112233445");
-        patientEntity.setEmail("dkubacki@gmail.com");
-        patientEntity.setPatientNumber("P0004");
-        patientEntity.setDateOfBirth(LocalDate.of(1990, 3, 15));
-        patientEntity.setWeight(8.0);
-        patientEntity.setAddress(address);
-        return PatientMapper.mapToTO(patientDao.save(patientEntity));
-    }
-
-    private void createAndSaveVisits(DoctorEntity doctor, PatientTO patient) {
-        VisitEntity visit = new VisitEntity();
-        visit.setDoctor(doctor);
-        visit.setPatient(PatientMapper.mapToEntity(patient));
-        visit.setDescription("Badanie krwi");
-        visit.setTime(LocalDateTime.of(2025, 4, 20, 15, 30));
-        visitDao.save(visit);
-
-        VisitEntity visit2 = new VisitEntity();
-        visit2.setDoctor(doctor);
-        visit2.setPatient(PatientMapper.mapToEntity(patient));
-        visit2.setDescription("Badanie EKG");
-        visit2.setTime(LocalDateTime.of(2026, 2, 10, 15, 30));
-        visitDao.save(visit2);
+        assertThat(patientList.size()).isEqualTo(2);
+        assertThat(patientList.get(0).getId()).isEqualTo(3L);
     }
 }

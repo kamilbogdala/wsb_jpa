@@ -48,7 +48,7 @@ public class PatientEntity {
 	private LocalDate dateOfBirth;
 
 	// One-to-one relationship with AddressEntity (two-way relation)
-	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, optional = false)
+	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "address_id")
 	private AddressEntity address;
 

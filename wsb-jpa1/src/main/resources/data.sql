@@ -9,11 +9,11 @@ VALUES
 
 INSERT INTO doctor (id, first_name, last_name, telephone_number, email, doctor_number, specialization, address_id)
 VALUES
-    (1, 'Pablo', 'Baginski', '111222333', 'pbaginski@gmail.com', 'D0010', 'Radiolog', 2),
-    (2, 'Jan', 'Nowak', '444555666', 'jnowak@gmail.com', 'D0020', 'Kardiolog', 3),
-    (3, 'Andrzej', 'Kowalski', '777888999', 'skowalski@gmail.com', 'D0030', 'Okulista', 4),
-    (4, 'Krzyszfot', 'Alaska', '987654321', 'kalaska@gmail.com', 'D0040', 'Neurolog', 5),
-    (5, 'Stefan', 'Raczek', '192837465', 'sraczek@gmail.com', 'D0050', 'Ginekolog', 6);
+    (1, 'Pablo', 'Baginski', '111222333', 'pbaginski@gmail.com', 'D0010', 'RADIOLOGIST', 2),
+    (2, 'Jan', 'Nowak', '444555666', 'jnowak@gmail.com', 'D0020', 'GP', 3),
+    (3, 'Andrzej', 'Kowalski', '777888999', 'skowalski@gmail.com', 'D0030', 'DERMATOLOGIST', 4),
+    (4, 'Krzyszfot', 'Alaska', '987654321', 'kalaska@gmail.com', 'D0040', 'OCULIST', 5),
+    (5, 'Stefan', 'Raczek', '192837465', 'sraczek@gmail.com', 'D0050', 'RADIOLOGIST', 6);
 
 INSERT INTO patient (id, first_name, last_name, telephone_number, email, patient_number, date_of_birth, address_id, weight)
 VALUES
@@ -29,13 +29,16 @@ VALUES
     (2, 'Echo serca', '2024-12-02 11:15:00', 2, 2),
     (3, 'Badanie wzroku', '2024-12-03 08:30:00', 3, 3),
     (4, 'TK Głowy', '2025-12-03 08:30:00', 4, 4),
-    (5, 'Cytologia', '2025-03-03 08:30:00', 5, 5);
+    (5, 'Cytologia', '2025-03-03 08:30:00', 5, 5),
+    (6, 'Badanie krwi', '2025-12-01 12:45:00', 2, 3),
+    (7, 'Badanie EKG', '2025-10-01 12:45:00', 5, 3);
+
 
 INSERT INTO medical_treatment (id, description, type, visit_id)
 VALUES
-    (1, 'Badanie ultrasonograficzne (USG) wykonywane przy pomocy ultrasonografu.', 'Diagnostyczne', 1),
-    (2, 'Elektrokardiogram (EKG) - zarejestrowana elektryczna aktywność serca.', 'Diagnostyczne', 2),
-    (3, 'Coroczna kontrola wzrokuuu.', 'Diagnostyczne', 3),
-    (4, 'TK Głowy.', 'Diagnostyczne', 4),
-    (5, 'Cytologia.', 'Diagnostyczne', 5);
+    (1, 'Badanie ultrasonograficzne (USG) wykonywane przy pomocy ultrasonografu.', 'USG', 1),
+    (2, 'Elektrokardiogram (EKG) - zarejestrowana elektryczna aktywność serca.', 'EKG', 2),
+    (3, 'Coroczna kontrola wzrokuuu.', 'RTG', 3),
+    (4, 'TK Głowy.', 'USG', 4),
+    (5, 'Cytologia.', 'EKG', 5);
 
