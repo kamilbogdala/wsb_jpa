@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PatientServiceTest {
 
     @Autowired
@@ -77,6 +79,5 @@ public class PatientServiceTest {
         assertThat(patientVisits.get(0).getTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 8, 30));
         assertThat(patientVisits.get(1).getTime()).isEqualTo(LocalDateTime.of(2025, 12, 1, 12, 45));
         assertThat(patientVisits.get(2).getTime()).isEqualTo(LocalDateTime.of(2025, 10, 1, 12, 45));
-
     }
 }
